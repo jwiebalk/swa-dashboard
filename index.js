@@ -33,6 +33,7 @@ var returnDateString
 var adultPassengerCount
 var individualDealPrice
 var totalDealPrice
+var fareType = "DOLLARS"
 var interval = 30 // In minutes
 
 // Parse command line options (no validation, sorry!)
@@ -52,6 +53,10 @@ process.argv.forEach((arg, i, argv) => {
       break
     case "--passengers":
       adultPassengerCount = argv[i + 1]
+      break
+    case "--fareType":
+      //fareType = "fareType: " + argv[i + 1]
+      fareType = argv[i + 1]
       break
     case "--individual-deal-price":
       individualDealPrice = parseInt(argv[i + 1])
@@ -349,7 +354,7 @@ const fetch = () => {
       outboundTimeOfDay: "ANYTIME",
       returnTimeOfDay: "ANYTIME",
       seniorPassengerCount: 0,
-      fareType: "DOLLARS",
+      fareType: fareType,
       originAirport,
       destinationAirport,
       outboundDateString,
@@ -358,15 +363,27 @@ const fetch = () => {
     })
     .find("#faresOutbound .product_price")
     .then((priceMarkup) => {
-      const matches = priceMarkup.toString().match(/\$.*?(\d+)/)
-      const price = parseInt(matches[1])
-      fares.outbound.push(price)
+      if (fareType == "POINTS") {
+          const matches = priceMarkup.toString().match(/(?=>).*?(?=<)/)
+          const price = parseInt(matches[0].substring(1).replace(/,/g, ""))
+          fares.outbound.push(price)
+      } else {
+          const matches = priceMarkup.toString().match(/\$.*?(\d+)/)
+          const price = parseInt(matches[1])
+          fares.outbound.push(price)
+      }
     })
     .find("#faresReturn .product_price")
     .then((priceMarkup) => {
-      const matches = priceMarkup.toString().match(/\$.*?(\d+)/)
-      const price = parseInt(matches[1])
-      fares.return.push(price)
+      if (fareType == "POINTS") {
+          const matches = priceMarkup.toString().match(/(?=>).*?(?=<)/)
+          const price = parseInt(matches[0].substring(1).replace(/,/g, ""))
+          fares.return.push(price)
+      } else {
+          const matches = priceMarkup.toString().match(/\$.*?(\d+)/)
+          const price = parseInt(matches[1])
+          fares.return.push(price)
+      }
     })
     .done(() => {
       const lowestOutboundFare = Math.min(...fares.outbound)
@@ -470,6 +487,7 @@ dashboard.settings([
   `Outbound date: ${outboundDateString}`,
   `Return date: ${returnDateString}`,
   `Passengers: ${adultPassengerCount}`,
+  `Fare Type: ${fareType}`,
   `Interval: ${pretty(interval * TIME_MIN)}`,
   `Individual deal price: ${individualDealPrice ? `<= \$${individualDealPrice}` : "disabled"}`,
   `Total deal price: ${totalDealPrice ? `<= \$${totalDealPrice}` : "disabled"}`,
