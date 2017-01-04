@@ -451,10 +451,19 @@ const fetch = () => {
           }
         }
 
-        dashboard.log([
-          `Lowest fares for an outbound flight is currently \$${[lowestOutboundFare, outboundFareDiffString].filter(i => i).join(" ")}`,
-          `Lowest fares for a return flight is currently \$${[lowestReturnFare, returnFareDiffString].filter(i => i).join(" ")}`
-        ])
+
+          if (fareType == "POINTS") {
+              dashboard.log([
+              `Lowest fares for an outbound flight is currently ${[lowestOutboundFare, outboundFareDiffString].filter(i => i).join(" ")}`,
+              `Lowest fares for a return flight is currently ${[lowestReturnFare, returnFareDiffString].filter(i => i).join(" ")}`
+              ])
+          } else {
+               dashboard.log([
+              `Lowest fares for an outbound flight is currently \$${[lowestOutboundFare, outboundFareDiffString].filter(i => i).join(" ")}`,
+              `Lowest fares for a return flight is currently \$${[lowestReturnFare, returnFareDiffString].filter(i => i).join(" ")}`
+              ])
+          }
+
 
         dashboard.plot({
           outbound: lowestOutboundFare,
