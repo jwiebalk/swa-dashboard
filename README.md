@@ -15,7 +15,7 @@ cd wherever-you-cloned-it-to
 npm link
 ```
 
-If you recieve a ``SyntaxError: Unexpected token ...`` upon running the `swa` command, make sure you are running a version of node that supports ES6 syntax (5.11.0 and up). 
+If you recieve a ``SyntaxError: Unexpected token ...`` upon running the `swa` command, make sure you are running a version of node that supports ES6 syntax (5.11.0 and up).
 
 Under some circumstances, libxmljs may throw an error that looks like this:
 ```
@@ -47,6 +47,7 @@ swa \
   --leave-date '11/01/2016' \
   --return-date '11/08/2016' \
   --passengers 2 \
+  --fareType {POINTS|DOLLARS} \ # Specify POINTS (optional, defaults to DOLLARS)
   --individual-deal-price 50 \ # In dollars (optional)
   --total-deal-price 120 \ # In dollars (optional)
   --interval 5 # In minutes (optional)
